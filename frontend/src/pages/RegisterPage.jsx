@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useState } from 'react';
 
 export default function RegisterPage() {
@@ -12,15 +11,9 @@ export default function RegisterPage() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
-    const handleSubmit = async (e) => {
+    async function handleSubmit(e) {
         e.preventDefault();
-        try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-            await axios.post(`${API_URL}/api/auth/register`, formData);
-            console.log('Registration Successful! Please Login.');
-        } catch (error) {
-            console.error(error);
-        }
+        console.log('Submitting form data:', formData);
     }
 
     return (
