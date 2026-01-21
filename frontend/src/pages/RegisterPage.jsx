@@ -13,6 +13,7 @@ export default function RegisterPage() {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        console.log(new FormData(e.target).json());
         console.log('Submitting form data:', formData);
     }
 
