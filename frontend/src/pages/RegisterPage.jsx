@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
-        username: '',
+        name: '',
         email: '',
         password: ''
     });
@@ -13,8 +13,10 @@ export default function RegisterPage() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        console.log(new FormData(e.target).json());
-        console.log('Submitting form data:', formData);
+
+        // handle registration logic here
+
+        console.log(formData);
     }
 
     return (
@@ -22,10 +24,10 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className='bg-white p-8 rounded shadow-md w-96 space-y-4'>
                 <h2 className='text-2xl font-bold mb-6 text-center text-blue-600'>Join SquadBoard</h2>
                 <div>
-                    <label htmlFor="user-name" className='block text-gray-700'>Username</label>
+                    <label htmlFor="user-name" className='block text-gray-700'>Name</label>
                     <input
                         type="text"
-                        name="username"
+                        name="name"
                         placeholder="jdoe"
                         onChange={handleChange}
                         required
