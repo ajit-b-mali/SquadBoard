@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavHashLink } from "react-router-hash-link";
 
 function Logo() {
     return (
@@ -8,34 +9,74 @@ function Logo() {
     );
 }
 
+const sectionIDs = ["hero", "features", "cta"];
+
 function Header() {
+    const [active, setActive] = useState("hero");
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActive(entry.target.id);
+                    }
+                });
+            },
+            {
+                rootMargin: "-40% 0px -40% 0px",
+            }
+        );
+
+        sectionIDs.forEach((id) => {
+            const section = document.getElementById(id);
+            if (section) {
+                observer.observe(section);
+            }
+        });
+
+        return () => observer.disconnect();
+    }, []);
+
+    const linkClass = (id) =>
+        `transition-colors duration-00 ${
+            active === id
+            ? "text-red-600 relative after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-red-600"
+            : "text-gray-600 hover:text-blue-600 relative after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-blue-600 hover:after:w-full after:transition-all"
+        }`;
+
     return (
         <header className="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-gray-100">
             <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-                <NavLink to="/" className="flex items-center gap-2">
+                <NavHashLink to="/" className="flex items-center gap-2">
                     <Logo />
-                </NavLink>
+                </NavHashLink>
 
                 <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-600">
-                    <a href="#hero" className="hover:text-blue-600">Overview</a>
-                    <a href="#features" className="hover:text-blue-600">Features</a>
-                    <a href="#cta" className="hover:text-blue-600">Get started</a>
-                    <NavLink to="/dashboard" className="hover:text-blue-600">Live demo</NavLink>
+                    <NavHashLink smooth to="#hero" className={linkClass("hero")}>
+                        Overview
+                    </NavHashLink>
+                    <NavHashLink smooth to="#features" className={linkClass("features")}>
+                        Features
+                    </NavHashLink>
+                    <NavHashLink smooth to="#cta" className={linkClass("cta")}>
+                        Get started
+                    </NavHashLink>
                 </nav>
 
                 <div className="flex items-center gap-3">
-                    <NavLink
+                    <NavHashLink
                         to="/login"
                         className="hidden md:inline px-4 py-2 text-sm font-semibold text-gray-700 hover:text-blue-600"
                     >
                         Sign in
-                    </NavLink>
-                    <NavLink
+                    </NavHashLink>
+                    <NavHashLink
                         to="/register"
                         className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-700 transition"
                     >
                         Get started
-                    </NavLink>
+                    </NavHashLink>
                 </div>
             </div>
         </header>
@@ -47,11 +88,11 @@ function Footer() {
         <footer className="bg-gray-950 text-gray-200">
             <div className="max-w-5xl mx-auto px-6 py-10 grid gap-10 md:grid-cols-3">
                 <div className="space-y-3">
-                    <NavLink to="/" className="inline-flex items-center gap-2">
+                    <NavHashLink to="/" className="inline-flex items-center gap-2">
                         <Logo />
-                    </NavLink>
+                    </NavHashLink>
                     <p className="text-sm text-gray-400">
-                        Simple, collaborative boards to keep your squad shipping together.
+                        The unified task stream for your personal life and shared projects.
                     </p>
                 </div>
 
@@ -61,17 +102,17 @@ function Footer() {
                         <a href="#hero" className="hover:text-white">Overview</a>
                         <a href="#features" className="hover:text-white">Features</a>
                         <a href="#cta" className="hover:text-white">Get started</a>
-                        <NavLink to="/dashboard" className="hover:text-white">Live demo</NavLink>
+                        <NavHashLink to="/dashboard" className="hover:text-white">Live demo</NavHashLink>
                     </div>
                 </div>
 
                 <div>
                     <h4 className="text-sm font-semibold uppercase tracking-wide text-gray-400 mb-3">Account</h4>
                     <div className="flex flex-col gap-2">
-                        <NavLink to="/login" className="hover:text-white">Sign in</NavLink>
-                        <NavLink to="/register" className="hover:text-white">Create account</NavLink>
-                        <NavLink to="/profile" className="hover:text-white">Profile</NavLink>
-                        <NavLink to="/support" className="hover:text-white">Support</NavLink>
+                        <NavHashLink to="/login" className="hover:text-white">Sign in</NavHashLink>
+                        <NavHashLink to="/register" className="hover:text-white">Create account</NavHashLink>
+                        <NavHashLink to="/profile" className="hover:text-white">Profile</NavHashLink>
+                        <NavHashLink to="/support" className="hover:text-white">Support</NavHashLink>
                     </div>
                 </div>
             </div>
@@ -113,12 +154,12 @@ function Section({id, children}) {
 
 export default function LandingPage() {
     const features = [
-        { title: "Plan sprints", desc: "Organize work with boards, swimlanes, and checklists." },
-        { title: "Collaborate", desc: "Assign tasks, mention teammates, and keep everyone aligned." },
-        { title: "Ship faster", desc: "Track progress with velocity charts and burn-down metrics." },
-        { title: "Automate rituals", desc: "Trigger standup digests and QA checklists with one click." },
-        { title: "Template anything", desc: "Kick off projects faster with ready-to-use board templates." },
-        { title: "Stay secure", desc: "Role-based access, audit trails, and SSO-ready." },
+        { title: "Unified Stream", desc: "See your personal tasks and shared projects in one single view." },
+        { title: "Context Tags", desc: "Filter by #work, #grocery, or #urgent instantly. No folder digging." },
+        { title: "Share Instantly", desc: "Invite a friend to a single task or list without creating a whole 'Team'." },
+        { title: "Focus Mode", desc: "Hide the noise. Toggle between 'All Tasks' and 'Just Me' in one click." },
+        { title: "Zero Admin", desc: "No complex boards to set up. Just type, hit enter, and get to work." },
+        { title: "Mobile Ready", desc: "Perfect for capturing ideas on the go or checking off grocery items." },
     ];
 
     return (
@@ -130,45 +171,24 @@ export default function LandingPage() {
                         <div className="space-y-4">
                             <p className="text-blue-600 font-semibold uppercase">SquadBoard</p>
                             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-                                Stay organized, ship together, celebrate wins.
+                                Master your day,<br />alone or together.
                             </h1>
                             <p className="text-lg text-gray-600">
-                                Boards, tasks, and insights in one place. Perfect for agile teams that want clarity without clutter.
+                                No complex boards. No hidden folders. Just one simple stream for your personal goals and shared projects.
                             </p>
                             <div className="flex gap-4">
-                                <NavLink
+                                <NavHashLink
                                     to="/register"
                                     className="px-5 py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition"
                                 >
                                     Get started
-                                </NavLink>
-                                <NavLink
+                                </NavHashLink>
+                                <NavHashLink
                                     to="/login"
                                     className="px-5 py-3 border border-gray-300 rounded-md font-semibold text-gray-700 hover:border-blue-600 hover:text-blue-600 transition"
                                 >
                                     Sign in
-                                </NavLink>
-                            </div>
-
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-gray-100">
-                                {[{
-                                    label: "Teams on SquadBoard",
-                                    value: "2.8k"
-                                }, {
-                                    label: "Tasks shipped",
-                                    value: "480k"
-                                }, {
-                                    label: "Sprint velocity uplift",
-                                    value: "+18%"
-                                }, {
-                                    label: "Avg. time saved",
-                                    value: "6h/wk"
-                                }].map((stat) => (
-                                    <div key={stat.label} className="bg-white rounded-lg border border-gray-100 p-4 shadow-sm">
-                                        <p className="text-xs uppercase font-semibold text-gray-500">{stat.label}</p>
-                                        <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                                    </div>
-                                ))}
+                                </NavHashLink>
                             </div>
                         </div>
                         <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-100">
@@ -178,20 +198,44 @@ export default function LandingPage() {
                                     <span className="w-3 h-3 bg-yellow-400 rounded-full" />
                                     <span className="w-3 h-3 bg-green-400 rounded-full" />
                                 </div>
-                                <p className="text-sm font-semibold text-gray-500">Sprint: Onboarding</p>
+                                <p className="text-sm font-semibold text-gray-500">My Stream</p>
                             </div>
                             <div className="space-y-3">
-                                {["Design landing", "Set up API", "QA checklist"].map((task) => (
-                                    <div
-                                        key={task}
-                                        className="flex justify-between items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-100"
-                                    >
-                                        <p className="font-semibold text-gray-800">{task}</p>
-                                        <span className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full">
-                                            In progress
-                                        </span>
+                                {/* Example 1: Personal Task */}
+                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-lg border border-gray-100 shadow-sm">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-5 h-5 border-2 border-gray-300 rounded-full"></div>
+                                        <div>
+                                            <p className="font-semibold text-gray-800">Buy Milk & Eggs</p>
+                                            <p className="text-xs text-green-600 font-medium">#personal</p>
+                                        </div>
                                     </div>
-                                ))}
+                                </div>
+
+                                {/* Example 2: Shared Task */}
+                                <div className="flex justify-between items-center px-4 py-3 bg-blue-50 rounded-lg border border-blue-100">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-5 h-5 border-2 border-blue-400 rounded-full"></div>
+                                        <div>
+                                            <p className="font-semibold text-gray-900">Plan Weekend Trip</p>
+                                            <p className="text-xs text-blue-600 font-medium">Shared with Alex</p>
+                                        </div>
+                                    </div>
+                                    <span className="text-xs bg-white text-blue-600 px-2 py-1 rounded shadow-sm">
+                                        Active
+                                    </span>
+                                </div>
+
+                                {/* Example 3: Work Task */}
+                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-lg border border-gray-100 shadow-sm">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-5 h-5 border-2 border-red-300 rounded-full"></div>
+                                        <div>
+                                            <p className="font-semibold text-gray-800">Finish Monthly Report</p>
+                                            <p className="text-xs text-red-500 font-medium">#urgent</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -200,9 +244,9 @@ export default function LandingPage() {
                 <Section id="features">
                     <div className="space-y-8">
                         <div className="space-y-3 max-w-3xl">
-                            <h2 className="text-3xl font-bold text-gray-900">Built for modern product teams</h2>
+                            <h2 className="text-3xl font-bold text-gray-900">Productivity, simplified.</h2>
                             <p className="text-lg text-gray-600">
-                                Ship rituals, not chaos. SquadBoard keeps everyone in sync with simple workflows and powerful insights.
+                                Stop switching between "Work Apps" and "Life Apps." SquadBoard brings everything into one unified flow.
                             </p>
                         </div>
 
@@ -220,12 +264,12 @@ export default function LandingPage() {
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 font-bold grid place-items-center">01</div>
                                     <div>
-                                        <p className="text-sm uppercase font-semibold text-blue-600">Weekly ritual</p>
-                                        <p className="text-base font-semibold text-gray-900">Plan → Execute → Celebrate</p>
+                                        <p className="text-sm uppercase font-semibold text-blue-600">The Daily Flow</p>
+                                        <p className="text-base font-semibold text-gray-900">Capture → Share → Done</p>
                                     </div>
                                 </div>
                                 <div className="space-y-3 text-sm text-gray-700">
-                                    {["Set the sprint goals and owners", "Auto-create QA and launch checklists", "Notify channels with status + blockers", "Review the burn-down and velocity delta"].map((item) => (
+                                    {["Dump all ideas into your Stream", "Add a friend to specific tasks instantly", "Filter by #urgent when you need focus", "Watch shared tasks complete in real-time"].map((item) => (
                                         <div key={item} className="flex items-start gap-2">
                                             <span className="mt-1 w-2 h-2 rounded-full bg-blue-500" />
                                             <p>{item}</p>
@@ -233,7 +277,7 @@ export default function LandingPage() {
                                     ))}
                                 </div>
                                 <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-100 rounded-lg">
-                                    <p className="text-sm text-blue-900 font-semibold">Teams see an average +18% velocity after three cycles.</p>
+                                    <p className="text-sm text-blue-900 font-semibold">Spend less time organizing, more time doing.</p>
                                 </div>
                             </div>
                         </div>
@@ -242,26 +286,26 @@ export default function LandingPage() {
 
                 <Section id="cta">
                     <div className="text-center space-y-6">
-                        <h3 className="text-3xl font-bold text-gray-900">Ready to get your squad aligned?</h3>
+                        <h3 className="text-3xl font-bold text-gray-900">Ready to clear your mind?</h3>
                         <p className="text-lg text-gray-600">
-                            Create a workspace in minutes, invite your team, and keep every sprint on one page.
+                            Create your personal workspace in seconds. Share only what you want, keep the rest for yourself.
                         </p>
                         <div className="flex justify-center gap-4 flex-wrap">
-                            <NavLink
+                            <NavHashLink
                                 to="/register"
                                 className="px-6 py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition"
                             >
                                 Start for free
-                            </NavLink>
-                            <NavLink
+                            </NavHashLink>
+                            <NavHashLink
                                 to="/dashboard"
                                 className="px-6 py-3 border border-gray-300 rounded-md font-semibold text-gray-700 hover:border-blue-600 hover:text-blue-600 transition"
                             >
                                 View demo
-                            </NavLink>
+                            </NavHashLink>
                         </div>
                         <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-sm text-gray-600">
-                            {["No credit card", "Live demo with data", "Cancel anytime"].map((item) => (
+                            {["No credit card", "Free for individuals", "Unlimited sharing"].map((item) => (
                                 <div key={item} className="flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-blue-500" />
                                     <p>{item}</p>
