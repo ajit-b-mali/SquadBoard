@@ -2,13 +2,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { use } from "react";
 
 export default function DashboardPage() {
     const navigate = useNavigate();
 
     // 1. Lazy initialization: Grab user before the first render
-    const [user, setUser] = useState(() => {
+    const [user, _] = useState(() => {
         try {
             const saved = localStorage.getItem('user');
             return saved ? JSON.parse(saved) : null;
@@ -76,7 +75,7 @@ export default function DashboardPage() {
                 setTasks(updatedTasks);
 
                 // call server
-                const API_URL = process.env.VITE_API_URL || 'http://localhost:5000';
+                const API_URL = 'http://localhost:5000';
                 await axios.put(`${API_URL}/api/tasks/${taskId}`, {
                     status: newStatus
                 });
@@ -88,7 +87,7 @@ export default function DashboardPage() {
 
     const handleDelete = async (taskId) => {
         try {
-            const API_URL = process.env.VITE_API_URL || 'http://localhost:5000';
+            const API_URL = 'http://localhost:5000';
             await axios.delete(`${API_URL}/api/tasks/${taskId}`);
             setTasks(tasks.filter((t) => t._id !== taskId));
         } catch (err) {
