@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -6,6 +8,8 @@ export default function RegisterPage() {
         email: '',
         password: ''
     });
+    const [error, setError] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -13,56 +17,71 @@ export default function RegisterPage() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-
-        // handle registration logic here
-
-        console.log(formData);
+        setError(false);
+        try {
+            const API_URL = 'http://localhost:5000/api/auth/register';
+            const res = await axios.post(API_URL, formData);
+            res.data && navigate('/login');
+        } catch(err) {
+            setError(true);
+            console.log(err);
+        }
     }
 
-    return (
-        <div className='bg-gray-100 h-screen flex justify-center items-center'>
-            <form onSubmit={handleSubmit} className='bg-white p-8 rounded shadow-md w-96 space-y-4'>
-                <h2 className='text-2xl font-bold mb-6 text-center text-blue-600'>Join SquadBoard</h2>
-                <div>
-                    <label htmlFor="user-name" className='block text-gray-700'>Name</label>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="jdoe"
-                        onChange={handleChange}
-                        required
-                        className='border border-gray-300 p-2 w-full rounded mt-1'
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        name='email'
-                        placeholder='john@example.com'
-                        onChange={handleChange}
-                        required
-                        className='border border-gray-300 p-2 w-full rounded mt-1'
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type='password'
-                        name='password'
-                        placeholder='********'
-                        onChange={handleChange}
-                        required
-                        className='border border-gray-300 p-2 w-full rounded mt-1'
-                    />
-                </div>
-
-                <button className='bg-blue-600 text-white w-full p-2 rounded hover:bg-blue-700 transition'>
-                    Register
-                </button>
-            </form>
+return (
+    <div className="flex justify-center items-center h-screen bg-gray-50">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-lg w-96 border border-gray-100">
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Join SquadBoard</h2>
+        
+        {/* Username */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <input 
+            name="username"
+            type="text" 
+            placeholder="johndoe"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            onChange={handleChange}
+            required
+          />
         </div>
-    );
+
+        {/* Email */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input 
+            name="email"
+            type="email" 
+            placeholder="john@example.com"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {/* Password */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input 
+            name="password"
+            type="password" 
+            placeholder="********"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {error && <span className="text-red-500 text-sm block mb-4 text-center">Something went wrong!</span>}
+
+        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition font-semibold">
+          Create Account
+        </button>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Login</Link>
+        </p>
+      </form>
+    </div>
+  );
 }

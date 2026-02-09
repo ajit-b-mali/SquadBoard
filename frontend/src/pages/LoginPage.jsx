@@ -1,10 +1,14 @@
 import { useState } from 'react';
+import axios from 'axios';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
+    const [error, setError] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -12,10 +16,16 @@ export default function LoginPage() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-
-        // handle login logic here
-
-        console.log(formData);
+        setError(false);
+        try {
+            const API_URL = 'http://localhost:5000/api/auth/login';
+            const res = await axios.post(API_URL, formData);
+            localStorage.setItem('user', JSON.stringify(res.data));
+            navigate('/dashboard');
+        } catch(err) {
+            setError(true);
+            console.error('Login failed:', err);
+        }
     }
 
     return (
@@ -47,9 +57,15 @@ export default function LoginPage() {
                     />
                 </div>
 
-                <button className='bg-blue-600 text-white w-full p-2 rounded hover:bg-blue-700 transition'>
+                {error && <div className="text-red-500 text-sm text-center mb-4">{error}</div>}
+
+                <button className='bg-blue-600 text-white w-full p-2 rounded hover:bg-blue-700 transition font-semibold'>
                     Login
                 </button>
+
+                <p className='text-center text-gray-600'>
+                    New here? <Link to="/register" className='text-blue-600 hover:underline'>Create an account</Link>
+                </p>
             </form>
         </div>
     );
