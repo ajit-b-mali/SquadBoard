@@ -34,7 +34,8 @@ export default function DashboardPage() {
 
         const fetchTasks = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/tasks?userId=${user._id}`);
+                const API_URL = import.meta.env.VITE_API_URL;
+                const res = await axios.get(`${API_URL}/tasks?userId=${user._id}`);
                 setTasks(res.data);
             } catch(err) {
                 console.error('Failed to fetch tasks:', err);
@@ -50,7 +51,8 @@ export default function DashboardPage() {
         if (!newTask) return;
 
         try {
-            const res = await axios.post('http://localhost:5000/api/tasks', {
+            const API_URL = import.meta.env.VITE_API_URL;
+            const res = await axios.post(`${API_URL}/tasks`, {
                 title: newTask,
                 owner: user._id
             });
@@ -75,8 +77,8 @@ export default function DashboardPage() {
                 setTasks(updatedTasks);
 
                 // call server
-                const API_URL = 'http://localhost:5000';
-                await axios.put(`${API_URL}/api/tasks/${taskId}`, {
+                const API_URL = import.meta.env.VITE_API_URL;
+                await axios.put(`${API_URL}/tasks/${taskId}`, {
                     status: newStatus
                 });
             } catch(err) {
@@ -87,8 +89,8 @@ export default function DashboardPage() {
 
     const handleDelete = async (taskId) => {
         try {
-            const API_URL = 'http://localhost:5000';
-            await axios.delete(`${API_URL}/api/tasks/${taskId}`);
+            const API_URL = import.meta.env.VITE_API_URL;
+            await axios.delete(`${API_URL}/tasks/${taskId}`);
             setTasks(tasks.filter((t) => t._id !== taskId));
         } catch (err) {
             console.error(err);

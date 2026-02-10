@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({
@@ -18,8 +18,8 @@ export default function LoginPage() {
         e.preventDefault();
         setError(false);
         try {
-            const API_URL = 'http://localhost:5000/api/auth/login';
-            const res = await axios.post(API_URL, formData);
+            const API_URL = import.meta.env.VITE_API_URL;
+            const res = await axios.post(`${API_URL}/auth/login`, formData);
             localStorage.setItem('user', JSON.stringify(res.data));
             navigate('/dashboard');
         } catch(err) {

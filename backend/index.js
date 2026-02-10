@@ -27,4 +27,8 @@ app.get('/', (req, res) => res.send('SquadBoard API is Running on Vercel!'));
 app.use('/api/auth', authRoute);
 app.use('/api/tasks', taskRoute);
 
+if (process.env.NODE_ENV !== 'production') {
+    
+}
+
 export default app;

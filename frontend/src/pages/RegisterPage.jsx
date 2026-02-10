@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
-        name: '',
+        username: '',
         email: '',
         password: ''
     });
@@ -19,8 +19,8 @@ export default function RegisterPage() {
         e.preventDefault();
         setError(false);
         try {
-            const API_URL = 'http://localhost:5000/api/auth/register';
-            const res = await axios.post(API_URL, formData);
+            const API_URL = import.meta.env.VITE_API_URL;
+            const res = await axios.post(`${API_URL}/auth/register`, formData);
             res.data && navigate('/login');
         } catch(err) {
             setError(true);
